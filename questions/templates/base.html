@@ -1,0 +1,75 @@
+{% load static %}
+
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>AskIvan</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+  </head>
+
+  <body>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand ml-3 mr-5" href="{% url 'index' %}">AskIvan</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <form class="form-inline my-2 my-lg-0 ml-5 mr-auto">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Ask</button>
+    </form>
+      {% if user.is_authenticated %}
+        <div class="col-3">
+          <div class="row">
+            <div class="col-4">
+              <img class="avatar w-100 img-thumbnail" src="{{ user.upload.url }}" alt>
+            </div>
+            <div class="col mt-1">
+              <div class="row">
+                <p>{{ user.nickname }}</p>
+              </div>
+              <div class="row">
+                <p class="mr-4 mb-0"><a href="#" class="btn btn-primary">settings</a></p>
+                <p class="mb-0"><a href="{% url 'signOut' %}"class="btn btn-primary">logout</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <div class="col-3">
+          <div class="row">
+            <div class="col mt-1">
+              <div class="row">
+                <p class="mr-4 mb-0"><a href="#" class="btn btn-primary">settings</a></p>
+                  <p><a href="{% url 'signIn' %}" class="btn btn-primary">sign in</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+  </div>
+</nav>
+{% block content %}{% endblock %}
+
+
+
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script>
+
+</script>
+
+
+</body>
+</html>

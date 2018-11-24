@@ -1,0 +1,37 @@
+.quiestion_item {
+	background-color: white;
+}
+
+.question_item:hover {
+	background-color: red;
+}
+
+.avatar {
+	border: 2px solid gray;
+	border-radius: 100px;
+}
+
+.bg {
+	background-color: white;
+	transition: 500ms;
+}
+
+.bg:hover {
+	background-color: #ECEBEB;
+}
+
+.red {
+	color: red;
+}
+
+.green {
+	color: green;
+}
+
+.orange {
+	color: orange;
+}
+
+.pag {
+	border:1px solid black; padding:0.3rem 0.8rem 0.3rem 0.8rem;
+}

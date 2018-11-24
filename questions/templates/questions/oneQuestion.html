@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+      <div class="col-8">
+        <div class="row p-3">
+          <div class="col-3">
+            <img class="avatar w-100 mb-5" src="{{ question.author.upload.url }}" width=110 alt>
+            <span class="ml-4 mr-1">{{ question.num_likes }}</span>
+            <img class="mr-2" src="{% static 'img/like.png' %}" width="20" height="20" alt>
+            <span class="mr-1">{{ question.num_dislikes }}</span>
+            <img src="{% static 'img/dislike.png' %}" width="20" height="20" alt>
+          </div>
+          <div class="col-9">
+            <h2><a href="#">{{ question.title }}</a></h2>
+            <p>{{ question.text }}</p>
+            <span>Tags:</span>
+            {% for tag in question.tags.all %}
+              <span class="ml-3"><a href="#">{{ tag.title }}</a></span>
+            {% endfor %}
+          </div>
+        </div>
+        {% if answers %}
+          <hr style="background-color: black;">
+          {% for answer in answers %}
+            <div class="row quiestion_item p-3 mt-4">
+            <div class="col-2">
+              <img class="avatar w-100 mb-2" src="{{ answer.author.upload.url }}" width=70 alt>
+            <span class="mr-1">{{ answer.num_likes }}</span>
+            <img class="mr-2" src="{% static 'img/like.png' %}" width="20" height="20" alt>
+            <span class="mr-1">{{ answer.num_dislikes }}</span>
+            <img src="{% static 'img/dislike.png' %}" width="20" height="20" alt>
+            </div>
+            <div class="col-10">
+              <p>{{ answer.text }}</p>
+              {% if answer.isCorrect %}
+                <form>
+                  <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="exampleCheck1" checked>
+                    <label class="form-check-label" for="exampleCheck1">Correct!</label>
+                  </div>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+          <hr style="background-color: black;">
+        {% endif %}
+      </div>
+      {% include "questions/sideBar.html" %}
+      <form class="col-8 mt-3">
+        <div class="form-group">
+          <textarea class="form-control" rows="5" id="comment">Enter your answer here...</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Answer</button>
+      </form>
+    </div>
+{% endblock %}
