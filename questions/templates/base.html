@@ -24,33 +24,38 @@
   </button>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <form class="form-inline my-2 my-lg-0 ml-5 mr-auto">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Ask</button>
-    </form>
+  <a href="{% url 'ask' %}" class="ask my-2 my-lg-0 ml-5 mr-auto">ASK</a>
       {% if user.is_authenticated %}
-        <div class="col-3">
+        <div class="col-3 pt-2 pb-2">
           <div class="row">
             <div class="col-4">
-              <img class="avatar w-100 img-thumbnail" src="{{ user.upload.url }}" alt>
+              <a href="{% url 'profile' user.id %}"><img class="avatar w-100 img-thumbnail" src="{{ user.upload.url }}" alt></a>
             </div>
-            <div class="col mt-1">
-              <div class="row">
-                <p>{{ user.nickname }}</p>
-              </div>
-              <div class="row">
-                <p class="mr-4 mb-0"><a href="#" class="btn btn-primary">settings</a></p>
-                <p class="mb-0"><a href="{% url 'signOut' %}"class="btn btn-primary">logout</a></p>
-              </div>
+            {% if user.nickname %}
+              <div class="col mt-1">
+                <div class="row">
+                  <p>{{ user.nickname }}</p>
+                </div>
+                <div class="row">
+                  <p class="mr-4 mb-0"><a href="{% url 'editProfile' %}" class="btn btn-primary">settings</a></p>
+                  <p class="mb-0"><a href="{% url 'signOut' %}"class="btn btn-primary">logout</a></p>
+                </div>
+              {% else %}
+              <div class="col pt-2 pb-2">
+                <div class="row">
+                  <p class="mr-4 mb-0"><a href="#" class="btn btn-primary">settings</a></p>
+                  <p class="mb-0"><a href="{% url 'signOut' %}"class="btn btn-primary">logout</a></p>
+                </div>
+              {% endif %}
             </div>
           </div>
         </div>
       {% else %}
-        <div class="col-3">
+        <div class="col-2 mt-3">
           <div class="row">
             <div class="col mt-1">
               <div class="row">
-                <p class="mr-4 mb-0"><a href="#" class="btn btn-primary">settings</a></p>
+                <p class="mr-4 mb-0"><a href="{% url 'signUp' %}" class="btn btn-primary">sign up</a></p>
                   <p><a href="{% url 'signIn' %}" class="btn btn-primary">sign in</a></p>
               </div>
             </div>

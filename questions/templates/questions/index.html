@@ -22,7 +22,7 @@
     </div>
     <div class="row">
         <div class="col-8">
-          {% for question in questions %}
+          {% for question in paginate %}
               <div class="row quiestion_item p-3 mt-4 bg">
                   <div class="col-3">
                       <img class="avatar w-100 img-thumbnail mb-4" src="{{ question.author.upload.url }}" width=70 alt>

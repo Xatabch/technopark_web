@@ -9,10 +9,10 @@
   </div>
   <div class="row">
     <div class="col-8">
-    {% for question in questions %}
+    {% for question in paginate %}
       <div class="row quiestion_item p-3 mt-4 bg">
         <div class="col-3">
-          <img class="avatar w-100 img-thumbnail mb-4" src="{% static 'img/ivan.jpg' %}" width=70 alt>
+          <img class="avatar w-100 img-thumbnail mb-4" src="{{ question.author.upload.url }}" width=70 alt>
           <span class="ml-4 mr-1">{{ question.num_likes }}</span>
           <img class="mr-2" src="{% static 'img/like.png' %}" width="20" height="20" alt>
           <span class="mr-1">{{ question.num_dislikes }}</span>
@@ -22,7 +22,7 @@
           <h2><a href="{% url 'question' question.id %}">{{ question.title }}</a></h2>
           <p>{{ question.text }}</p>
           <span class="mr-5">
-            <a href="{% url 'question' question.id %}">answer(3)</a>
+            <a href="{% url 'question' question.id %}">answer({{ question.num_answers }})</a>
           </span>
           <span>Tags:</span>
           {% for tag in question.tags.all %}

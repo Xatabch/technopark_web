@@ -14,7 +14,6 @@ class UserManager(UserManager):
         return self.annotate(num_users=Count('answerlike')).order_by("-num_users")[:10]
 
     def create_user(self, login, email, nickname, password=None, photo=None):
-
         if not login:
             raise ValueError('У пользователья должен быть логин!')
 
@@ -30,8 +29,21 @@ class UserManager(UserManager):
         user.save(using=self._db)
         return user
 
+    def edit_user(self, user, login=None, email=None, nickname=None, photo=None):
 
-class User(AbstractUser): # Profile в ТЗ
+        if email != '':
+            user.email = email
+        if nickname != '':
+            user.nickname = nickname
+        if photo:
+            user.upload = photo
+
+        user.save()
+
+        return user
+
+
+class User(AbstractUser):  # Profile в ТЗ
     objects = UserManager()
     upload = models.ImageField(upload_to='uploads/%Y/%m/%d', default='uploads/default_image.jpg')
     nickname = models.CharField(max_length=100)
@@ -44,6 +56,18 @@ class TagManager(models.Manager):
     def best_tags(self):
         return self.annotate(num_tags=Count('question')).order_by("-num_tags")[:10]
 
+    def get_tag_by_name(self, name):
+        return self.get(title=name)
+
+    def create_tag(self, title):
+        tag = self.model(
+            title=title
+        )
+
+        tag.save()
+
+        return tag
+
 
 class Tag(models.Model):
     objects = TagManager()
@@ -54,6 +78,10 @@ class Tag(models.Model):
 
 
 class QuestionManager(models.Manager):
+
+    def get_absolute_url(self, id):
+        return "/question/%i/" % id
+
     def all_questions(self):
         return self.all()
 
@@ -64,19 +92,45 @@ class QuestionManager(models.Manager):
     def get_questions_by_tag(self, tagname):
         tag = Tag.objects.get(title=tagname)
         result = self.filter(tags=tag).annotate(num_likes=Count('questionlike', distinct=True),
-                                                num_dislikes=Count('questiondislike', distinct=True))
+                                                num_dislikes=Count('questiondislike', distinct=True),
+                                                num_answers=Count("answer", distinct=True))
 
         return result
 
     def get_question_by_popular(self):
         return self.all().annotate(num_likes=Count('questionlike', distinct=True),
-                        num_dislikes=Count('questiondislike', distinct=True),
+                                   num_dislikes=Count('questiondislike', distinct=True),
                                    num_answers=Count("answer", distinct=True)).order_by('-num_likes')[:10]
 
     def get_question_by_date(self):
         return self.all().annotate(num_likes=Count("questionlike", distinct=True),
                                    num_dislikes=Count("questiondislike", distinct=True),
                                    num_answers=Count("answer", distinct=True)).order_by("-create_date")
+
+    def create_question(self, author, title, text, tags):
+        question = self.model(
+            author=author,
+            title=title,
+            text=text,
+        )
+
+        question.save()
+
+        tag = tags.split(',')
+        tags_for_filter = [tag[i].split(' ') for i in range(len(tag))]
+
+        if tags_for_filter:
+            for t in tags_for_filter:
+                for j in t:
+                    if j != '':
+                        try:
+                            new_tag = Tag.objects.get_tag_by_name(j)
+                        except:
+                            new_tag = Tag.objects.create_tag(j)
+
+                        question.tags.add(new_tag)
+
+        return question
 
 
 class Question(models.Model):
@@ -117,6 +171,20 @@ class AnswerManager(models.Manager):
     def get_answers_by_id(self, id):
         return self.filter(question__id=id).annotate(num_likes=Count('answerlike', distinct=True),
                                                      num_dislikes=Count("answerdislike", distinct=True))
+
+    def get_absolute_url(self, question, answer):
+        return "/question/%i/?page=%i" % (question.id, answer.paginator.num_pages)
+
+    def create_answer(self, author, question, text):
+        answer = self.model(
+            author=author,
+            question=question,
+            text=text,
+        )
+
+        answer.save()
+
+        return answer
 
 
 class Answer(models.Model):

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load widget_tweaks %}
 
 {% block content %}
 <div class="container mt-5">
@@ -22,9 +23,9 @@
             {% endfor %}
           </div>
         </div>
-        {% if answers %}
+        {% if paginate %}
           <hr style="background-color: black;">
-          {% for answer in answers %}
+          {% for answer in paginate %}
             <div class="row quiestion_item p-3 mt-4">
             <div class="col-2">
               <img class="avatar w-100 mb-2" src="{{ answer.author.upload.url }}" width=70 alt>
@@ -50,9 +51,11 @@
         {% endif %}
       </div>
       {% include "questions/sideBar.html" %}
-      <form class="col-8 mt-3">
+      {% include "paginate.html" %}
+      <form action="{% url 'question' question.id %}" method="post" class="col-8 mt-3">
+        {% csrf_token %}
         <div class="form-group">
-          <textarea class="form-control" rows="5" id="comment">Enter your answer here...</textarea>
+          {% render_field form.text class="form-control" placeholder="Enter your answer here..." %}
         </div>
         <button type="submit" class="btn btn-primary">Answer</button>
       </form>

@@ -1,5 +1,5 @@
 from django import forms
-from .models import User
+from .models import User, Question, Answer
 
 
 class AuthForm(forms.Form):
@@ -39,5 +39,48 @@ class SignUpFrom(forms.Form):
         user = User.objects.create_user(login=self.cleaned_data['login'], email=self.cleaned_data['email'],
                                         nickname=self.cleaned_data['nickname'], password=self.cleaned_data['password'],
                                         photo=self.cleaned_data['photo'])
-        user.save()
         return user
+
+
+class EditProfileForm(forms.Form):
+    email = forms.EmailField(max_length=100, required=False)
+    nickname = forms.CharField(max_length=100, required=False)
+    photo = forms.ImageField(required=False)
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError('Пользователь с таким email уже существует')
+
+        return email
+
+    def save(self):
+        user = self.initial['user']
+        usr = User.objects.edit_user(user=user, email=self.cleaned_data['email'],
+                                     nickname=self.cleaned_data['nickname'], photo=self.cleaned_data['photo'])
+        return usr
+
+
+class AddQuestionForm(forms.Form):
+    title = forms.CharField(max_length=100)
+    text = forms.CharField(widget=forms.Textarea)
+    tags = forms.CharField(max_length=100)
+
+    def save(self):
+        user = self.initial['user']
+        question = Question.objects.create_question(user, self.cleaned_data['title'],
+                                                    self.cleaned_data['text'], self.cleaned_data['tags'])
+
+        return question
+
+
+class AddAnswerForm(forms.Form):
+    text = forms.CharField(widget=forms.Textarea)
+
+    def save(self):
+        user = self.initial['user']
+        question = self.initial['question']
+
+        answer = Answer.objects.create_answer(user, question, self.cleaned_data['text'])
+
+        return answer
