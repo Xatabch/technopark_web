@@ -1,10 +1,19 @@
 from django import forms
+from django.contrib.auth import authenticate, login
 from .models import User, Question, Answer
 
 
 class AuthForm(forms.Form):
     login = forms.CharField(max_length=100)
     password = forms.CharField(widget=forms.PasswordInput)
+
+    def clean(self):
+        user = authenticate(self.initial['request'], username=self.cleaned_data['login'],
+                            password=self.cleaned_data['password'])
+        if user is None:
+            raise forms.ValidationError('Неправильно введен логин/пароль')
+
+        login(self.initial['request'], user)
 
 
 class SignUpFrom(forms.Form):
@@ -17,7 +26,7 @@ class SignUpFrom(forms.Form):
 
     def clean(self):
         if self.cleaned_data['password'] != self.cleaned_data['password_confirmation']:
-            raise self.add_error('password_confirmation', 'Пароли не совпадают')
+            raise forms.ValidationError('Пароли не сопадают')
 
         return self.cleaned_data
 

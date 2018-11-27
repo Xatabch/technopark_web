@@ -51,3 +51,13 @@
 	color: white;
 	text-decoration: none;
 }
+
+.error {
+	color: red;
+}
+
+ul.errorlist {
+	list-style: none;
+	padding: 0;
+	color: red;
+}

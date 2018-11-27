@@ -19,6 +19,9 @@
         <label for="password">{{ form.password.label }}</label>
         {% render_field form.password class="form-control" id="password" placeholder="Enter your password"%}
       </div>
+      {% for e in form.non_field_errors %}
+      	<p class="error">{{ e }}</p>
+      {% endfor %}
       <button type="submit" class="btn btn-primary">Log in!</button>
     </form>
     <p><a href=#>Create new account</a></p>

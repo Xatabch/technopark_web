@@ -70,15 +70,11 @@ def hot(request):
 
 def signIn(request):
     if request.method == 'POST':
-        form = AuthForm(request.POST)
+        form = AuthForm(request.POST, initial={'request':request})
         if form.is_valid():
-            user = authenticate(request, username=form.cleaned_data['login'], password=form.cleaned_data['password'])
-            print(user)
-            if user is not None:
-                login(request, user)
-                return redirect('/')
-            else:
-                return render(request, "questions/auth.html", {'form': form})
+            return redirect('/')
+        else:
+            return render(request, "questions/auth.html", {'form': form})
     else:
         form = AuthForm()
 
@@ -92,6 +88,8 @@ def signUp(request):
             user = form.save()
             login(request, user)
             return redirect('/')
+        else:
+            return render(request, "questions/registration.html", {'form': form})
     else:
         form = SignUpFrom()
 
@@ -114,6 +112,9 @@ def editProfile(request):
         if form.is_valid():
             form.save()
             return redirect('/profile/edit')
+        else:
+            print(form.errors)
+            return render(request, "questions/profileEdit.html", {'form': form})
     else:
         form = EditProfileForm()
 
